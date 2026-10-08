@@ -42,7 +42,9 @@ export interface SpellRowState {
   components: { c: boolean; r: boolean; m: boolean }
   concentration: boolean
   ritual: boolean
-  notes: string
+  notes: string // short mechanical summary (e.g. "1d6 Psychic DisSa")
+  description: string // full spell description (free-form text)
+  iconDataUrl: string // optional uploaded icon image (base64 data URL); replaces the level badge
 }
 
 export interface CharacterSheet {
@@ -86,8 +88,6 @@ export interface CharacterSheet {
   speciesTraits: string
   feats: string
   equipmentTrainingNotes: string
-  appearanceNotes: string
-  backstoryNotes: string
   alignment: string
 
   // Proficiencies
@@ -215,8 +215,6 @@ export function defaultCharacter(): CharacterSheet {
     feats: 'Musician. As you finish a Short or Long Rest, play a song to give Heroic Inspiration ' +
       'to allies who hear it (number of allies = Proficiency Bonus).',
     equipmentTrainingNotes: '',
-    appearanceNotes: '',
-    backstoryNotes: '',
     alignment: 'Chaotic Good',
 
     armorTraining: {
@@ -245,15 +243,101 @@ export function defaultCharacter(): CharacterSheet {
     ],
     spells: [
       // cantrips
-      { id: id(), level: 'C', name: 'Vicious Mockery', castingTime: 'A', range: '60', components: { c: true, r: false, m: false }, concentration: false, ritual: false, notes: '1d6 Psychic DisSa' },
-      { id: id(), level: 'C', name: 'Prestidigitation', castingTime: 'A', range: '60', components: { c: true, r: false, m: false }, concentration: false, ritual: false, notes: 'minor magical effect' },
-      { id: id(), level: 'C', name: 'Mind Sliver', castingTime: 'A', range: '60', components: { c: true, r: false, m: false }, concentration: false, ritual: false, notes: 'Int save -d6 next save' },
+      {
+        id: id(), level: 'C', name: 'Vicious Mockery', castingTime: '1A', range: '60 ft',
+        components: { c: true, r: false, m: false }, concentration: false, ritual: false,
+        notes: '1d6 Psychic · Wis save · disadv next attack',
+        description:
+          'You unleash a string of insults laced with subtle enchantments at a creature you can see within range. ' +
+          'If the target can hear you (though it need not understand you), the target must succeed on a Wisdom saving throw ' +
+          'or take 1d6 psychic damage and have disadvantage on the next attack roll it makes before the end of its next turn.\n\n' +
+          'At Higher Levels. The damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).',
+        iconDataUrl: '',
+      },
+      {
+        id: id(), level: 'C', name: 'Prestidigitation', castingTime: '1A', range: '10 ft',
+        components: { c: true, r: false, m: false }, concentration: false, ritual: false,
+        notes: 'Minor magical effect (up to 3 active)',
+        description:
+          'This spell is a minor magical trick that novice spellcasters use for practice. You create one of the following magical effects within range:\n\n' +
+          '• You create a harmless sensory effect, such as a shower of sparks, a gust of wind, faint musical notes, or a strong odor.\n' +
+          '• You light or snuff a candle, torch, or small campfire.\n' +
+          '• You chill or warm up to 1 cubic foot of nonliving material for 1 hour.\n' +
+          '• You color, clean, or soil 1 cubic foot of nonliving material for 1 hour.\n' +
+          '• You make a small mark or symbol appear on a surface for 1 hour.\n' +
+          '• You create a small, useless trinket that lasts until the end of your next turn.\n\n' +
+          'If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time.',
+        iconDataUrl: '',
+      },
+      {
+        id: id(), level: 'C', name: 'Mind Sliver', castingTime: '1A', range: '60 ft',
+        components: { c: true, r: false, m: false }, concentration: false, ritual: false,
+        notes: '1d6 Psychic · Int save · -1d4 next save',
+        description:
+          'You drive a disorienting spike of psychic energy into the mind of one creature you can see within range. ' +
+          'The target must make an Intelligence saving throw. On a failed save, the target takes 1d6 psychic damage and ' +
+          'subtracts 1d4 from the next saving throw it makes before the end of your next turn.\n\n' +
+          'At Higher Levels. The damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).',
+        iconDataUrl: '',
+      },
       // L1
-      { id: id(), level: '1', name: 'Charm Person', castingTime: 'A', range: '30', components: { c: true, r: false, m: false }, concentration: true, ritual: false, notes: 'Charm 1h WIS S' },
-      { id: id(), level: '1', name: 'Color Spray', castingTime: 'A', range: '15ft Co', components: { c: true, r: false, m: true }, concentration: false, ritual: false, notes: 'Blind ENT CON S' },
-      { id: id(), level: '1', name: 'Bane', castingTime: 'A', range: '30ft 3t', components: { c: true, r: false, m: true }, concentration: true, ritual: false, notes: '-d4 Att CHA S' },
-      { id: id(), level: '1', name: 'Cure Wounds', castingTime: 'A', range: '60ft 5fs', components: { c: true, r: false, m: true }, concentration: false, ritual: false, notes: '2d8+CHA heal' },
-      { id: id(), level: '1', name: 'Sleep', castingTime: 'A', range: '90ft', components: { c: true, r: false, m: true }, concentration: false, ritual: false, notes: 'Wis save' },
+      {
+        id: id(), level: '1', name: 'Charm Person', castingTime: '1A', range: '30 ft',
+        components: { c: true, r: false, m: false }, concentration: true, ritual: false,
+        notes: 'Charm 1h · Wis save',
+        description:
+          'You attempt to charm a humanoid you can see within range. It must make a Wisdom saving throw, and does so with advantage ' +
+          'if you or your companions are fighting it. On a failed save, it is charmed by you until the spell ends or until you or your ' +
+          'companions do anything harmful to it. The charmed creature is friendly to you.\n\n' +
+          'When the spell ends, the creature knows it was charmed by you.\n\n' +
+          'At Higher Levels. You can target one additional creature for each slot level above 1st.',
+        iconDataUrl: '',
+      },
+      {
+        id: id(), level: '1', name: 'Color Spray', castingTime: '1A', range: '15 ft cone',
+        components: { c: true, r: false, m: true }, concentration: false, ritual: false,
+        notes: 'Blind · Con save · 6d10 HP cap',
+        description:
+          'You hurl a dazzling array of flashing, colorful, blinding lights in a 15-foot cone. ' +
+          'Each creature in the area must make a Constitution saving throw. On a failed save, the creature is blinded for the duration.\n\n' +
+          'Roll 6d10; the total is how many hit points of creatures the spell can affect. Creatures are affected in order of their ' +
+          'hit points, starting with the lowest. Subtract each creature\'s hit points from the total before moving to the next.\n\n' +
+          'At Higher Levels. Roll 2d10 more for each slot level above 1st.',
+        iconDataUrl: '',
+      },
+      {
+        id: id(), level: '1', name: 'Bane', castingTime: '1A', range: '30 ft (3 targets)',
+        components: { c: true, r: false, m: true }, concentration: true, ritual: false,
+        notes: '-1d4 to attacks & saves · Cha save',
+        description:
+          'Up to three creatures of your choice that you can see within range must make Charisma saving throws. On a failed save, ' +
+          'the targets subtract 1d4 from attack rolls and saving throws for the duration.\n\n' +
+          'A creature can be affected by only one Bane at a time.\n\n' +
+          'At Higher Levels. You can target one additional creature for each slot level above 1st.',
+        iconDataUrl: '',
+      },
+      {
+        id: id(), level: '1', name: 'Cure Wounds', castingTime: '1A', range: 'Touch',
+        components: { c: true, r: false, m: true }, concentration: false, ritual: false,
+        notes: '1d8 + CHA healing',
+        description:
+          'A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier. ' +
+          'This spell has no effect on undead or constructs.\n\n' +
+          'At Higher Levels. The healing increases by 1d8 for each slot level above 1st.',
+        iconDataUrl: '',
+      },
+      {
+        id: id(), level: '1', name: 'Sleep', castingTime: '1A', range: '90 ft',
+        components: { c: true, r: false, m: true }, concentration: false, ritual: false,
+        notes: '5d8 HP slumber · no save',
+        description:
+          'This spell sends creatures into a magical slumber. Roll 5d8; the total is how many hit points of creatures this spell can affect. ' +
+          'Creatures within 20 feet of a point you choose within range are affected in order of their hit points (ignoring unconscious creatures).\n\n' +
+          'Starting with the creature with the lowest hit points, each creature affected by this spell falls unconscious. Subtract each ' +
+          'creature\'s hit points from the total before moving to the next. Undead and creatures immune to being charmed aren\'t affected.\n\n' +
+          'At Higher Levels. Roll 2d8 more for each slot level above 1st.',
+        iconDataUrl: '',
+      },
     ],
     damageCantrips: '',
 
@@ -319,8 +403,6 @@ export function blankCharacter(): CharacterSheet {
     speciesTraits: '',
     feats: '',
     equipmentTrainingNotes: '',
-    appearanceNotes: '',
-    backstoryNotes: '',
     alignment: '',
     armorTraining: { Light: false, Medium: false, Heavy: false, Shields: false },
     weaponsProficient: '',

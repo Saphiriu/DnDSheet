@@ -45,50 +45,51 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* Dark theme — shadcn vars */
+  --background: oklch(0.16 0.005 50);
+  --foreground: oklch(0.92 0.02 70);
+  --card: oklch(0.2 0.005 50);
+  --card-foreground: oklch(0.92 0.02 70);
+  --popover: oklch(0.2 0.005 50);
+  --popover-foreground: oklch(0.92 0.02 70);
+  --primary: oklch(0.72 0.13 70);
+  --primary-foreground: oklch(0.16 0.005 50);
+  --secondary: oklch(0.26 0.005 50);
+  --secondary-foreground: oklch(0.92 0.02 70);
+  --muted: oklch(0.26 0.005 50);
+  --muted-foreground: oklch(0.7 0.03 70);
+  --accent: oklch(0.3 0.01 50);
+  --accent-foreground: oklch(0.92 0.02 70);
+  --destructive: oklch(0.65 0.2 25);
+  --border: oklch(0.4 0.04 60);
+  --input: oklch(0.4 0.04 60);
+  --ring: oklch(0.6 0.05 60);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.2 0.005 50);
+  --sidebar-foreground: oklch(0.92 0.02 70);
+  --sidebar-primary: oklch(0.72 0.13 70);
+  --sidebar-primary-foreground: oklch(0.16 0.005 50);
+  --sidebar-accent: oklch(0.3 0.01 50);
+  --sidebar-accent-foreground: oklch(0.92 0.02 70);
+  --sidebar-border: oklch(0.4 0.04 60);
+  --sidebar-ring: oklch(0.6 0.05 60);
 
-  /* DnD 5.5e character sheet theme */
-  --parchment: #f3ead2;
-  --parchment-dark: #e6d8a8;
-  --parchment-edge: #c9b173;
-  --ink: #2a1f0f;
-  --ink-soft: #4a3b1f;
-  --ink-faint: #76643a;
-  --rule: #3a2c14;
-  --rule-light: rgba(58, 44, 20, 0.18);
-  --blood: #6b0d0d;
-  --gold: #b48a3b;
-  --grid: rgba(80, 50, 20, 0.09);
+  /* DnD 5.5e character sheet — dark theme */
+  --parchment: #1a1410;       /* main background — deep warm brown-black */
+  --parchment-dark: #251c14;  /* toolbar / footer — slightly lighter */
+  --parchment-edge: #3a2c14;  /* panel edge */
+  --ink: #e8dcc4;             /* primary text — warm cream */
+  --ink-soft: #b8a378;        /* softer text — warm beige */
+  --ink-faint: #7a6a4f;       /* faint text — faded brown */
+  --rule: #6b5a3a;            /* border — warm bronze */
+  --rule-light: rgba(107, 90, 58, 0.35);
+  --blood: #d4453f;           /* bright blood red for dark bg */
+  --gold: #d4a949;            /* bright gold accent */
+  --grid: rgba(212, 169, 73, 0.08);  /* graph-paper lines on dark */
 }
 
 .dark {
@@ -141,9 +142,9 @@
 .parchment-bg {
   background-color: var(--parchment);
   background-image:
-    radial-gradient(ellipse 120% 90% at 50% 0%, rgba(255, 245, 210, 0.6) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 60% at 100% 100%, rgba(150, 100, 40, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 60% at 0% 100%, rgba(150, 100, 40, 0.08) 0%, transparent 60%);
+    radial-gradient(ellipse 120% 90% at 50% 0%, rgba(212, 169, 73, 0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 100% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 0% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 60%);
   position: relative;
 }
 
@@ -153,9 +154,9 @@
   inset: 0;
   pointer-events: none;
   background-image:
-    repeating-linear-gradient(0deg, rgba(80, 50, 20, 0.025) 0px, rgba(80, 50, 20, 0.025) 1px, transparent 1px, transparent 3px),
-    repeating-linear-gradient(90deg, rgba(80, 50, 20, 0.025) 0px, rgba(80, 50, 20, 0.025) 1px, transparent 1px, transparent 3px);
-  mix-blend-mode: multiply;
+    repeating-linear-gradient(0deg, rgba(255, 220, 150, 0.02) 0px, rgba(255, 220, 150, 0.02) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(90deg, rgba(255, 220, 150, 0.02) 0px, rgba(255, 220, 150, 0.02) 1px, transparent 1px, transparent 3px);
+  mix-blend-mode: screen;
   z-index: 0;
 }
 
@@ -258,6 +259,7 @@
 .sheet-diamond.is-filled {
   background-color: var(--blood);
   border-color: var(--blood);
+  box-shadow: 0 0 6px rgba(212, 73, 63, 0.6);
 }
 
 .sheet-diamond.is-checked {
@@ -290,7 +292,7 @@
 .sheet-circle.is-expertise {
   background-color: var(--gold);
   border-color: var(--gold);
-  box-shadow: 0 0 0 1px var(--rule) inset;
+  box-shadow: 0 0 0 1px var(--rule) inset, 0 0 8px rgba(212, 169, 73, 0.4);
 }
 
 /* Big circular modifier box (abilities) */
@@ -376,12 +378,13 @@
 /* Header banner — D&D logo look */
 .sheet-banner {
   background-color: transparent;
-  background-image: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(58, 44, 20, 0.07) 100%);
+  background-image: linear-gradient(to bottom, transparent 0%, transparent 70%, rgba(212, 169, 73, 0.12) 100%);
   text-align: center;
   font-family: 'Cinzel', 'Trajan Pro', var(--font-geist-sans), serif;
   font-weight: 800;
   letter-spacing: 0.3em;
   color: var(--ink);
+  text-shadow: 0 0 20px rgba(212, 169, 73, 0.3);
 }
 
 .sheet-banner .ampersand {
@@ -407,7 +410,7 @@
 }
 
 .sheet-input-line:focus {
-  background-color: rgba(58, 44, 20, 0.06);
+  background-color: rgba(212, 169, 73, 0.12);
 }
 
 .sheet-input-line::placeholder {
@@ -427,7 +430,7 @@
 }
 
 .sheet-input-box:focus {
-  background-color: rgba(58, 44, 20, 0.05);
+  background-color: rgba(212, 169, 73, 0.10);
   border-color: var(--rule);
 }
 
@@ -464,6 +467,7 @@
 
 .sheet-star.is-active {
   background-color: var(--gold);
+  box-shadow: 0 0 12px rgba(212, 169, 73, 0.5);
 }
 
 /* Custom scrollbar for long lists */

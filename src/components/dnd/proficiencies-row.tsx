@@ -17,41 +17,46 @@ export function ProficienciesRow() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-2">
-      {/* Heroic Inspiration + Jack of All Trades */}
-      <div className="sheet-shield p-2 flex flex-col items-center justify-start gap-2">
-        <div className="sheet-label">HEROIC INSPIRATION</div>
-        <button
-          type="button"
-          onClick={toggleHeroic}
-          className={`sheet-star mt-1 ${sheet.heroicInspiration ? 'is-active' : ''}`}
-          aria-pressed={sheet.heroicInspiration}
-          aria-label="Toggle heroic inspiration"
-        >
-          <Star className="w-4 h-4" />
-        </button>
+      {/* Left column: Heroic Inspiration shield + JoAT toggle (in separate panels
+          so the shield's pointed-bottom clip-path doesn't clip the JoAT button) */}
+      <div className="flex flex-col gap-2">
+        <div className="sheet-shield p-2 flex flex-col items-center justify-start">
+          <div className="sheet-label">HEROIC INSPIRATION</div>
+          <button
+            type="button"
+            onClick={toggleHeroic}
+            className={`sheet-star mt-1 ${sheet.heroicInspiration ? 'is-active' : ''}`}
+            aria-pressed={sheet.heroicInspiration}
+            aria-label="Toggle heroic inspiration"
+          >
+            <Star className="w-4 h-4" />
+          </button>
+        </div>
 
-        {/* Jack of All Trades toggle (under Heroic Inspiration) */}
-        <button
-          type="button"
-          onClick={toggleJoAT}
-          className="mt-2 w-full flex items-center gap-2 py-1.5 px-2 border text-[10px] font-bold uppercase tracking-wider"
-          style={{
-            borderColor: 'var(--rule)',
-            color: sheet.jackOfAllTrades ? 'var(--ink)' : 'var(--ink-faint)',
-            backgroundColor: sheet.jackOfAllTrades
-              ? 'rgba(180, 138, 59, 0.18)'
-              : 'transparent',
-          }}
-          aria-pressed={sheet.jackOfAllTrades}
-          aria-label="Toggle Jack of All Trades (+1 to non-proficient ability checks)"
-          title="Jack of All Trades — Bard level-2 feature: +1 to ability checks you are not proficient in"
-        >
-          <Sparkles className="w-3.5 h-3.5 flex-shrink-0" />
-          <span className="text-[9px] leading-tight text-left">
-            Jack of All Trades
-            <span className="block font-normal opacity-80">+1 to non-proficient checks</span>
-          </span>
-        </button>
+        {/* Jack of All Trades toggle — separate panel so it's never clipped */}
+        <div className="sheet-panel p-1.5 flex items-stretch">
+          <button
+            type="button"
+            onClick={toggleJoAT}
+            className="w-full flex items-center gap-2 py-1 px-1.5 border text-[10px] font-bold uppercase tracking-wider"
+            style={{
+              borderColor: sheet.jackOfAllTrades ? 'var(--gold)' : 'var(--rule-light)',
+              color: sheet.jackOfAllTrades ? 'var(--ink)' : 'var(--ink-faint)',
+              backgroundColor: sheet.jackOfAllTrades
+                ? 'rgba(212, 169, 73, 0.15)'
+                : 'transparent',
+            }}
+            aria-pressed={sheet.jackOfAllTrades}
+            aria-label="Toggle Jack of All Trades (+1 to non-proficient skill checks)"
+            title="Jack of All Trades — Bard level-2 feature: +1 to skill checks you are not proficient in (does not apply to saving throws)"
+          >
+            <Sparkles className="w-4 h-4 flex-shrink-0" />
+            <span className="text-[9px] leading-tight text-left">
+              Jack of All Trades
+              <span className="block font-normal opacity-80">+1 to non-proficient skills</span>
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Equipment training & proficiencies */}
@@ -72,7 +77,7 @@ export function ProficienciesRow() {
                   borderColor: 'var(--rule)',
                   color: 'var(--ink)',
                   backgroundColor: sheet.armorTraining[t as ArmorType]
-                    ? 'rgba(180, 138, 59, 0.15)'
+                    ? 'rgba(212, 169, 73, 0.18)'
                     : 'transparent',
                 }}
                 aria-label={`Toggle ${t} armor training`}

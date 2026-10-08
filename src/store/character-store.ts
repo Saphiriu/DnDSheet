@@ -217,6 +217,8 @@ export const useCharacter = create<CharacterStore>()(
                 concentration: false,
                 ritual: false,
                 notes: '',
+                description: '',
+                iconDataUrl: '',
               },
             ],
           },
@@ -323,7 +325,7 @@ export const useCharacter = create<CharacterStore>()(
       setSavedId: (id) => set({ savedCharId: id }),
     }),
     {
-      name: 'dnd-character-sheet-v4',
+      name: 'dnd-character-sheet-v7',
       partialize: (s) => ({ sheet: s.sheet, savedCharId: s.savedCharId }),
     }
   )

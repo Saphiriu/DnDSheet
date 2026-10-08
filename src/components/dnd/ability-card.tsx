@@ -41,8 +41,8 @@ export function AbilityCard({ ability }: { ability: AbilityKey }) {
   const mod = abilityModifier(scoreNum)
 
   const isSaveProficient = sheet.abilities[ability].saveProficient
-  // Saving throws are ability checks, so JoAT also applies when not proficient.
-  const saveTotal = skillCheckTotal(mod, prof, isSaveProficient, false, joat)
+  // Saving throws DO NOT benefit from Jack of All Trades — only skills do.
+  const saveTotal = mod + (isSaveProficient ? prof : 0)
 
   // All skills belonging to this ability
   const skillsForAbility = SKILLS.filter((s) => s.ability === ability)
