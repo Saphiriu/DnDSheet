@@ -272,5 +272,5 @@ export type ArmorType = (typeof ARMOR_TYPES)[number]
 /**
  * Coin denominations.
  */
-export const COIN_TYPES = ['cp', 'sp', 'ep', 'gp', 'pp'] as const
+export const COIN_TYPES = ['cp', 'sp', 'gp', 'pp'] as const
 export type CoinType = (typeof COIN_TYPES)[number]

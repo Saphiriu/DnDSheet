@@ -134,14 +134,14 @@ function ClassFeaturesPanel() {
   const sheet = useCharacter((s) => s.sheet)
   const setField = useCharacter((s) => s.setField)
   return (
-    <div className="sheet-panel p-2 flex-1 min-h-[140px]">
+    <div className="sheet-panel p-2 flex flex-col flex-1 min-h-[140px]">
       <div className="sheet-label-lg mb-1">CLASS FEATURES</div>
       <textarea
         value={sheet.classFeatures}
         onChange={(e) => setField('classFeatures', e.target.value)}
-        rows={6}
-        className="w-full bg-transparent border-0 outline-none text-xs resize-none sheet-grid p-1 min-h-[120px]"
-        style={{ color: 'var(--ink)' }}
+        rows={8}
+        className="w-full bg-transparent border-0 outline-none text-xs resize-y sheet-grid p-1 flex-1 min-h-[160px]"
+        style={{ color: 'var(--ink)', fieldSizing: 'content' as React.CSSProperties['fieldSizing'] }}
         aria-label="Class features"
       />
     </div>
@@ -158,8 +158,8 @@ function SpeciesTraitsPanel() {
         value={sheet.speciesTraits}
         onChange={(e) => setField('speciesTraits', e.target.value)}
         rows={5}
-        className="w-full bg-transparent border-0 outline-none text-xs resize-none sheet-grid p-1 flex-1"
-        style={{ color: 'var(--ink)' }}
+        className="w-full bg-transparent border-0 outline-none text-xs resize-y sheet-grid p-1 flex-1"
+        style={{ color: 'var(--ink)', fieldSizing: 'content' as React.CSSProperties['fieldSizing'] }}
         aria-label="Species traits"
       />
     </div>
@@ -176,8 +176,8 @@ function FeatsPanel() {
         value={sheet.feats}
         onChange={(e) => setField('feats', e.target.value)}
         rows={5}
-        className="w-full bg-transparent border-0 outline-none text-xs resize-none sheet-grid p-1 flex-1"
-        style={{ color: 'var(--ink)' }}
+        className="w-full bg-transparent border-0 outline-none text-xs resize-y sheet-grid p-1 flex-1"
+        style={{ color: 'var(--ink)', fieldSizing: 'content' as React.CSSProperties['fieldSizing'] }}
         aria-label="Feats"
       />
     </div>

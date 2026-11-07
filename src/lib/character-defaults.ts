@@ -91,6 +91,7 @@ export interface CharacterSheet {
   feats: string
   equipmentTrainingNotes: string
   alignment: string
+  notes: string // free-form campaign notes (big text area on Page 3)
 
   // Proficiencies
   armorTraining: Record<ArmorType, boolean>
@@ -124,237 +125,228 @@ export function newId() {
 }
 
 /**
- * The default character: Jichael Mackson, Elf Bard 2.
- * Values are pulled directly from the populated PDF.
+ * The default character: Javier Escobar, Harengon Wizard (Bladesinger) 2.
  */
 export function defaultCharacter(): CharacterSheet {
   return {
-    characterName: 'Jichael Mackson',
-    background: 'ENTERTAINER',
-    class: 'Bard',
-    species: 'ELF',
-    subclass: '',
+    characterName: 'Javier Escobar',
+    background: 'West Side Dark Forest',
+    class: 'Wizard',
+    species: 'Harengon',
+    subclass: 'Bladesinger',
     level: 2,
-    xp: 400,
+    xp: 700,
 
-    armorClass: '14',
+    armorClass: '13',
     shield: '',
     hpTemp: '',
-    hpCurrent: '20',
-    hpMax: '20',
+    hpCurrent: '16',
+    hpMax: '16',
     hitDiceSpent: '0',
-    hitDiceMax: '2', // 1 Hit Die per class level
+    hitDiceMax: '2',
     deathSavesSuccesses: [false, false, false],
     deathSavesFailures: [false, false, false],
 
-    // NOTE: proficiencyBonus, initiative, passivePerception, spellcastingModifier,
-    // spellSaveDC, and spellAttackBonus are all auto-derived at render time
-    // from level / ability scores / proficiency toggles.
     speed: '30',
-    size: 'M',
+    size: 'S',
 
     abilities: {
-      str: { score: 11, saveProficient: false },
-      dex: { score: 10, saveProficient: false },
-      con: { score: 15, saveProficient: true },
-      int: { score: 10, saveProficient: false },
-      wis: { score: 16, saveProficient: false },
-      cha: { score: 18, saveProficient: false },
+      str: { score: 10, saveProficient: false },
+      dex: { score: 16, saveProficient: false },
+      con: { score: 14, saveProficient: false },
+      int: { score: 18, saveProficient: true },
+      wis: { score: 12, saveProficient: true },
+      cha: { score: 12, saveProficient: false },
     },
 
     skills: {
       acrobatics: { proficient: true, bonus: 0, expertise: false },
       animalHandling: { proficient: false, bonus: 0, expertise: false },
-      arcana: { proficient: false, bonus: 0, expertise: false },
+      arcana: { proficient: true, bonus: 0, expertise: true },
       athletics: { proficient: false, bonus: 0, expertise: false },
       deception: { proficient: true, bonus: 0, expertise: false },
       history: { proficient: false, bonus: 0, expertise: false },
       insight: { proficient: false, bonus: 0, expertise: false },
-      intimidation: { proficient: false, bonus: 0, expertise: false },
+      intimidation: { proficient: true, bonus: 0, expertise: false },
       investigation: { proficient: false, bonus: 0, expertise: false },
-      medicine: { proficient: false, bonus: 0, expertise: false },
-      nature: { proficient: false, bonus: 0, expertise: false },
+      medicine: { proficient: true, bonus: 0, expertise: false },
+      nature: { proficient: true, bonus: 0, expertise: false },
       perception: { proficient: true, bonus: 0, expertise: false },
-      performance: { proficient: true, bonus: 0, expertise: false },
-      persuasion: { proficient: true, bonus: 0, expertise: false },
+      performance: { proficient: false, bonus: 0, expertise: false },
+      persuasion: { proficient: false, bonus: 0, expertise: false },
       religion: { proficient: false, bonus: 0, expertise: false },
-      sleightOfHand: { proficient: true, bonus: 0, expertise: false },
-      stealth: { proficient: true, bonus: 0, expertise: false },
+      sleightOfHand: { proficient: false, bonus: 0, expertise: false },
+      stealth: { proficient: false, bonus: 0, expertise: false },
       survival: { proficient: false, bonus: 0, expertise: false },
     },
 
-    weapons: [
-      {
-        id: id(),
-        name: 'Vicious Mockery (Cantrip)',
-        atkBonus: '',
-        damage: '1d6 Psychic DisAtt',
-        notes: 'Wis save or disadv on next attack',
-      },
-      {
-        id: id(),
-        name: 'Dagger',
-        atkBonus: '+5',
-        damage: '1d4+3 piercing',
-        notes: 'Finesse, light, thrown 20/60',
-      },
-      {
-        id: id(),
-        name: 'Shortsword',
-        atkBonus: '+5',
-        damage: '1d6+3 piercing',
-        notes: 'Finesse, light',
-      },
-    ],
+    weapons: [],
 
-    classFeatures:
-      'Bardic Inspiration (d6): Bonus action, range 60ft, 1 min. Use Cha mod times per long rest. ' +
-      'Jack of All Trades: Half proficiency on non-proficient ability checks. ' +
-      'Song of Rest: Allies heal 1d6 HP on short rest. ' +
-      'B insp - +d6 on d20 uses = Cha',
-    speciesTraits:
-      'Darkvision 60ft.  Free Wizard cantrip.  Advantage on saving throws against being Charmed. ' +
-      'Immune to magical sleep.  Can\'t be put to sleep by magic.  Skill/weapon/tool proficiency choice.',
-    feats: 'Musician. As you finish a Short or Long Rest, play a song to give Heroic Inspiration ' +
-      'to allies who hear it (number of allies = Proficiency Bonus).',
+    classFeatures: 'Lucky Footwork. When you fail a Dexterity saving throw, you can use your reaction to roll a d4 and add it to the save, potentially turning the failure into a success. You can\'t use this reaction if you\'re prone or your speed is 0.\n\nLuck Points. You have a number of Luck Points equal to your Proficiency Bonus and can spend the points on the benefits below. You regain your expended Luck Points when you finish a Long Rest.\n\nYou can regain some of your magical energy by studying your spellbook. When you finish a Short Rest, you can choose expended spell slots to recover. The spell slots can have a combined level equal to no more than half your Wizard level (round up), and none of the slots can be level 6 or higher. For example, if you\'re a level 4 Wizard, you can recover up to two levels’ worth of spell slots, regaining either one level 2 spell slot or two level 1 spell slots.\n\nOnce you use this feature, you can\'t do so again until you finish a Long Rest.',
+    speciesTraits: '',
+    feats: '',
     equipmentTrainingNotes: '',
-    alignment: 'Chaotic Good',
+    alignment: 'Chaotic neutral',
+    notes: '',
 
     armorTraining: {
-      Light: true,
-      Medium: true,
+      Light: false,
+      Medium: false,
       Heavy: false,
-      Shields: true,
+      Shields: false,
     },
-    weaponsProficient: 'Simple weapons, longswords, shortswords, rapiers, hand crossbows',
-    toolsProficient: 'Drum, Lute, Panflute (3 instruments)',
-    languages: 'Common, Elvish, Celestial, Druid',
-    heroicInsppiration: true,
-    jackOfAllTrades: true, // Bard level-2 class feature
-    alertFeat: false, // Alert feat adds PB to initiative
+    weaponsProficient: 'Simple',
+    toolsProficient: 'Thieves tools',
+    languages: 'Common, Sylvan, Thieves cant, Infernal',
+    heroicInspiration: true,
+    jackOfAllTrades: false,
+    alertFeat: true,
 
-    spellcastingAbility: 'Charisma',
+    spellcastingAbility: 'Intelligence',
     spellSlots: [
-      { total: 3, expended: 0 }, // L1
-      { total: 0, expended: 0 }, // L2
-      { total: 0, expended: 0 }, // L3
-      { total: 0, expended: 0 }, // L4
-      { total: 0, expended: 0 }, // L5
-      { total: 0, expended: 0 }, // L6
-      { total: 0, expended: 0 }, // L7
-      { total: 0, expended: 0 }, // L8
-      { total: 0, expended: 0 }, // L9
+      { total: 3, expended: 0 },
+      { total: 0, expended: 0 }, { total: 0, expended: 0 }, { total: 0, expended: 0 },
+      { total: 0, expended: 0 }, { total: 0, expended: 0 }, { total: 0, expended: 0 },
+      { total: 0, expended: 0 }, { total: 0, expended: 0 },
     ],
     spells: [
-      // cantrips
       {
-        id: id(), level: 'C', name: 'Vicious Mockery', castingTime: '1A', range: '60 ft',
-        duration: 'Instantaneous',
-        components: { c: true, r: false, m: false }, concentration: false, ritual: false,
-        notes: '1d6 Psychic · Wis save · disadv next attack',
-        description:
-          'You unleash a string of insults laced with subtle enchantments at a creature you can see within range. ' +
-          'If the target can hear you (though it need not understand you), the target must succeed on a Wisdom saving throw ' +
-          'or take 1d6 psychic damage and have disadvantage on the next attack roll it makes before the end of its next turn.\n\n' +
-          'At Higher Levels. The damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).',
-        iconDataUrl: '',
-        prepared: true,
-      },
-      {
-        id: id(), level: 'C', name: 'Prestidigitation', castingTime: '1A', range: '10 ft',
+        id: id(), level: 'C', name: 'Prestidigitation', castingTime: 'A', range: '10 ft',
         duration: 'Up to 1 hour',
-        components: { c: true, r: false, m: false }, concentration: false, ritual: false,
+        components: { c: true, r: true, m: false },
+        concentration: false, ritual: false,
         notes: 'Minor magical effect (up to 3 active)',
-        description:
-          'This spell is a minor magical trick that novice spellcasters use for practice. You create one of the following magical effects within range:\n\n' +
-          '• You create a harmless sensory effect, such as a shower of sparks, a gust of wind, faint musical notes, or a strong odor.\n' +
-          '• You light or snuff a candle, torch, or small campfire.\n' +
-          '• You chill or warm up to 1 cubic foot of nonliving material for 1 hour.\n' +
-          '• You color, clean, or soil 1 cubic foot of nonliving material for 1 hour.\n' +
-          '• You make a small mark or symbol appear on a surface for 1 hour.\n' +
-          '• You create a small, useless trinket that lasts until the end of your next turn.\n\n' +
-          'If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time.',
+        description: 'You create a magical effect within range. Choose the effect from the options below. If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time.\n\nSensory Effect. You create an instantaneous, harmless sensory effect, such as a shower of sparks, a puff of wind, faint musical notes, or an odd odor.\n\nFire Play. You instantaneously light or snuff out a candle, a torch, or a small campfire.\n\nClean or Soil. You instantaneously clean or soil an object no larger than 1 cubic foot.\n\nMinor Sensation. You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour.\n\nMagic Mark. You make a color, a small mark, or a symbol appear on an object or a surface for 1 hour.\n\nMinor Creation. You create a nonmagical trinket or an illusory image that can fit in your hand. It lasts until the end of your next turn. A trinket can deal no damage and has no monetary worth.',
         iconDataUrl: '',
         prepared: true,
       },
       {
-        id: id(), level: 'C', name: 'Mind Sliver', castingTime: '1A', range: '60 ft',
-        duration: 'Instantaneous',
-        components: { c: true, r: false, m: false }, concentration: false, ritual: false,
-        notes: '1d6 Psychic · Int save · -1d4 next save',
-        description:
-          'You drive a disorienting spike of psychic energy into the mind of one creature you can see within range. ' +
-          'The target must make an Intelligence saving throw. On a failed save, the target takes 1d6 psychic damage and ' +
-          'subtracts 1d4 from the next saving throw it makes before the end of your next turn.\n\n' +
-          'At Higher Levels. The damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).',
-        iconDataUrl: '',
-        prepared: true,
-      },
-      // L1
-      {
-        id: id(), level: '1', name: 'Charm Person', castingTime: '1A', range: '30 ft',
-        duration: '1 hour',
-        components: { c: true, r: false, m: false }, concentration: true, ritual: false,
-        notes: 'Charm 1h · Wis save',
-        description:
-          'You attempt to charm a humanoid you can see within range. It must make a Wisdom saving throw, and does so with advantage ' +
-          'if you or your companions are fighting it. On a failed save, it is charmed by you until the spell ends or until you or your ' +
-          'companions do anything harmful to it. The charmed creature is friendly to you.\n\n' +
-          'When the spell ends, the creature knows it was charmed by you.\n\n' +
-          'At Higher Levels. You can target one additional creature for each slot level above 1st.',
+        id: id(), level: 'C', name: 'Blade Ward', castingTime: 'A', range: '0',
+        duration: '1 min',
+        components: { c: true, r: true, m: false },
+        concentration: true, ritual: false,
+        notes: '-1d4 for enemy attack',
+        description: 'Whenever a creature makes an attack roll against you before the spell ends, the attacker subtracts 1d4 from the attack roll.',
         iconDataUrl: '',
         prepared: true,
       },
       {
-        id: id(), level: '1', name: 'Color Spray', castingTime: '1A', range: '15 ft cone',
-        duration: '1 round',
-        components: { c: true, r: false, m: true }, concentration: false, ritual: false,
-        notes: 'Blind · Con save · 6d10 HP cap',
-        description:
-          'You hurl a dazzling array of flashing, colorful, blinding lights in a 15-foot cone. ' +
-          'Each creature in the area must make a Constitution saving throw. On a failed save, the creature is blinded for the duration.\n\n' +
-          'Roll 6d10; the total is how many hit points of creatures the spell can affect. Creatures are affected in order of their ' +
-          'hit points, starting with the lowest. Subtract each creature\'s hit points from the total before moving to the next.\n\n' +
-          'At Higher Levels. Roll 2d10 more for each slot level above 1st.',
+        id: id(), level: 'C', name: 'Message', castingTime: 'A', range: '120 ft',
+        duration: '0',
+        components: { c: false, r: false, m: false },
+        concentration: false, ritual: false,
+        notes: '',
+        description: 'You point toward a creature within range and whisper a message. The target (and only the target) hears the message and can reply in a whisper that only you can hear.\n\nYou can cast this spell through solid objects if you are familiar with the target and know it is beyond the barrier. Magical silence; 1 foot of stone, metal, or wood; or a thin sheet of lead blocks the spell.',
+        iconDataUrl: '',
+        prepared: false,
+      },
+      {
+        id: id(), level: 'C', name: 'True Strike', castingTime: 'A', range: '0',
+        duration: '0',
+        components: { c: false, r: true, m: true },
+        concentration: false, ritual: false,
+        notes: 'SM as attack and DMG',
+        description: 'Guided by a flash of magical insight, you make one attack with the weapon used in the spell’s casting. The attack uses your spellcasting ability for the attack and damage rolls instead of using Strength or Dexterity. If the attack deals damage, it can be Radiant damage or the weapon’s normal damage type (your choice).\n\nCantrip Upgrade. Whether you deal Radiant damage or the weapon’s normal damage type, the attack deals extra Radiant damage when you reach levels 5 (1d6), 11 (2d6), and 17 (3d6).',
         iconDataUrl: '',
         prepared: true,
       },
       {
-        id: id(), level: '1', name: 'Bane', castingTime: '1A', range: '30 ft (3 targets)',
-        duration: 'Up to 1 minute',
-        components: { c: true, r: false, m: true }, concentration: true, ritual: false,
-        notes: '-1d4 to attacks & saves · Cha save',
-        description:
-          'Up to three creatures of your choice that you can see within range must make Charisma saving throws. On a failed save, ' +
-          'the targets subtract 1d4 from attack rolls and saving throws for the duration.\n\n' +
-          'A creature can be affected by only one Bane at a time.\n\n' +
-          'At Higher Levels. You can target one additional creature for each slot level above 1st.',
+        id: id(), level: '1', name: 'Mage Armor', castingTime: 'A', range: 'T',
+        duration: '8h',
+        components: { c: true, r: true, m: true },
+        concentration: false, ritual: false,
+        notes: 'AC 13+dex',
+        description: 'You touch a willing creature who isn’t wearing armor. Until the spell ends, the target’s base AC becomes 13 plus its Dexterity modifier. The spell ends early if the target dons armor.',
         iconDataUrl: '',
         prepared: true,
       },
       {
-        id: id(), level: '1', name: 'Cure Wounds', castingTime: '1A', range: 'Touch',
-        duration: 'Instantaneous',
-        components: { c: true, r: false, m: true }, concentration: false, ritual: false,
-        notes: '1d8 + CHA healing',
-        description:
-          'A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier. ' +
-          'This spell has no effect on undead or constructs.\n\n' +
-          'At Higher Levels. The healing increases by 1d8 for each slot level above 1st.',
+        id: id(), level: '1', name: 'Identify', castingTime: '1min', range: 'T',
+        duration: '0',
+        components: { c: false, r: false, m: false },
+        concentration: false, ritual: true,
+        notes: '',
+        description: 'You touch an object throughout the spell’s casting. If the object is a magic item or some other magical object, you learn its properties and how to use them, whether it requires Attunement, and how many charges it has, if any. You learn whether any ongoing spells are affecting the item and what they are. If the item was created by a spell, you learn that spell’s name.\n\nIf you instead touch a creature throughout the casting, you learn which ongoing spells, if any, are currently affecting it.',
+        iconDataUrl: '',
+        prepared: false,
+      },
+      {
+        id: id(), level: '1', name: 'Find Familiar', castingTime: '1h', range: '10 ft',
+        duration: '',
+        components: { c: true, r: true, m: true },
+        concentration: false, ritual: true,
+        notes: '',
+        description: 'You gain the service of a familiar, a spirit that takes an animal form you choose: Bat, Cat, Frog, Hawk, Lizard, Octopus, Owl, Rat, Raven, Spider, Weasel, or another Beast that has a Challenge Rating of 0. Appearing in an unoccupied space within range, the familiar has the statistics of the chosen form (see appendix B), though it is a Celestial, Fey, or Fiend (your choice) instead of a Beast. Your familiar acts independently of you, but it obeys your commands.\n\nTelepathic Connection. While your familiar is within 100 feet of you, you can communicate with it telepathically. Additionally, as a Bonus Action, you can see through the familiar’s eyes and hear what it hears until the start of your next turn, gaining the benefits of any special senses it has.\n\nFinally, when you cast a spell with a range of touch, your familiar can deliver the touch. Your familiar must be within 100 feet of you, and it must take a Reaction to deliver the touch when you cast the spell.\n\nCombat. The familiar is an ally to you and your allies. It rolls its own Initiative and acts on its own turn. A familiar can’t attack, but it can take other actions as normal.\n\nDisappearance of the Familiar. When the familiar drops to 0 Hit Points, it disappears. It reappears after you cast this spell again. As a Magic action, you can temporarily dismiss the familiar to a pocket dimension. Alternatively, you can dismiss it forever. As a Magic action while it is temporarily dismissed, you can cause it to reappear in an unoccupied space within 30 feet of you. Whenever the familiar drops to 0 Hit Points or disappears into the pocket dimension, it leaves behind in its space anything it was wearing or carrying.\n\nOne Familiar Only. You can’t have more than one familiar at a time. If you cast this spell while you have a familiar, you instead cause it to adopt a new eligible form.\n\n',
+        iconDataUrl: '',
+        prepared: false,
+      },
+      {
+        id: id(), level: '1', name: 'Alarm', castingTime: '1min', range: '30ft',
+        duration: '8h',
+        components: { c: false, r: false, m: false },
+        concentration: false, ritual: true,
+        notes: '',
+        description: 'You set an alarm against intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot Cube. Until the spell ends, an alarm alerts you whenever a creature touches or enters the warded area. When you cast the spell, you can designate creatures that won’t set off the alarm. You also choose whether the alarm is audible or mental:\n\nAudible Alarm. The alarm produces the sound of a handbell for 10 seconds within 60 feet of the warded area.\n\nMental Alarm. You are alerted by a mental ping if you are within 1 mile of the warded area. This ping awakens you if you’re asleep.',
+        iconDataUrl: '',
+        prepared: false,
+      },
+      {
+        id: id(), level: '1', name: 'Comprehend Languages', castingTime: 'A', range: 'S',
+        duration: '1h',
+        components: { c: false, r: false, m: false },
+        concentration: false, ritual: true,
+        notes: '',
+        description: 'For the duration, you understand the literal meaning of any language that you hear or see signed. You also understand any written language that you see, but you must be touching the surface on which the words are written. It takes about 1 minute to read one page of text. This spell doesn\'t decode symbols or secret messages.',
+        iconDataUrl: '',
+        prepared: false,
+      },
+      {
+        id: id(), level: '1', name: 'Detect Magic', castingTime: 'A', range: 'S',
+        duration: '10 min',
+        components: { c: true, r: true, m: false },
+        concentration: true, ritual: true,
+        notes: '',
+        description: 'For the duration, you sense the presence of magical effects within 30 feet of yourself. If you sense such effects, you can take the Magic action to see a faint aura around any visible creature or object in the area that bears the magic, and if an effect was created by a spell, you learn the spell\'s school of magic.\n\nThe spell is blocked by 1 foot of stone, dirt, or wood; 1 inch of metal; or a thin sheet of lead',
+        iconDataUrl: '',
+        prepared: false,
+      },
+      {
+        id: id(), level: '1', name: 'Disguise Self', castingTime: '', range: 'S',
+        duration: '1h',
+        components: { c: false, r: false, m: false },
+        concentration: false, ritual: false,
+        notes: '',
+        description: 'You make yourself - including your clothing, armor, weapons, and other belongings on your person - look different until the spell ends. You can seem 1 foot shorter or taller and can appear heavier or lighter. You must adopt a form that has the same basic arrangement of limbs as you have. Otherwise, the extent of the illusion is up to you.\n\nThe changes wrought by this spell fail to hold up to physical inspection. For example, if you use this spell to add a hat to your outfit, objects pass through the hat, and anyone who touches it would feel nothing.\n\nTo discern that you are disguised, a creature must take the Study action to inspect your appearance and succeed on an Intelligence (Investigation) check against your spell save DC.\n\n',
         iconDataUrl: '',
         prepared: true,
       },
       {
-        id: id(), level: '1', name: 'Sleep', castingTime: '1A', range: '90 ft',
-        duration: '1 minute',
-        components: { c: true, r: false, m: true }, concentration: false, ritual: false,
-        notes: '5d8 HP slumber · no save',
-        description:
-          'This spell sends creatures into a magical slumber. Roll 5d8; the total is how many hit points of creatures this spell can affect. ' +
-          'Creatures within 20 feet of a point you choose within range are affected in order of their hit points (ignoring unconscious creatures).\n\n' +
-          'Starting with the creature with the lowest hit points, each creature affected by this spell falls unconscious. Subtract each ' +
-          'creature\'s hit points from the total before moving to the next. Undead and creatures immune to being charmed aren\'t affected.\n\n' +
-          'At Higher Levels. Roll 2d8 more for each slot level above 1st.',
+        id: id(), level: '1', name: 'Shield', castingTime: 'R', range: 'S',
+        duration: '1r',
+        components: { c: false, r: false, m: false },
+        concentration: false, ritual: false,
+        notes: '+5 AC',
+        description: 'An imperceptible barrier of magical force protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from Magic Missile.',
+        iconDataUrl: '',
+        prepared: true,
+      },
+      {
+        id: id(), level: '1', name: 'Spellfire Flare', castingTime: 'A', range: '60ft',
+        duration: 'I',
+        components: { c: true, r: true, m: false },
+        concentration: false, ritual: false,
+        notes: '2d10 radiant dmg anti cover',
+        description: 'You unleash a blast of brilliant fire. Make a ranged spell attack against a target within range; a target gains no benefit from Half Cover or Three-Quarters Cover for this attack roll. On a hit, the target takes 2d10 Radiant damage.\n\nUsing a Higher-Level Spell Slot. You create an additional blast for each spell slot level above 1. You can direct the blasts at the same target or at different ones. Make a separate attack roll for each blast.',
+        iconDataUrl: '',
+        prepared: true,
+      },
+      {
+        id: id(), level: '1', name: 'Frost Nova', castingTime: 'A', range: 'S',
+        duration: 'I',
+        components: { c: true, r: true, m: false },
+        concentration: false, ritual: false,
+        notes: '2d6 and restrained explosion',
+        description: 'You unleash a burst of frost, creating a 15-foot Emanation originating from you. Each creature of your choice in the Emanation makes a Constitution saving throw. On a failed save, a creature takes 2d6 Cold damage, and it has the Restrained condition until the end of your next turn. On a successful save, the creature takes half as much damage only.\n\nUsing a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1.',
         iconDataUrl: '',
         prepared: true,
       },
@@ -364,14 +356,11 @@ export function defaultCharacter(): CharacterSheet {
     coins: {
       cp: '0',
       sp: '0',
-      ep: '0',
-      gp: '128',
+      gp: '80',
       pp: '0',
     },
 
-    equipment:
-      'Studded leather armor, 2 daggers, shortsword, drum, lute, panflute, ' +
-      'entertainer\'s pack, burglar\'s pack, fine clothes, 2 trinkets',
+    equipment: 'l crossbow',
     magicItemAttunement: '',
   }
 }
@@ -424,6 +413,7 @@ export function blankCharacter(): CharacterSheet {
     feats: '',
     equipmentTrainingNotes: '',
     alignment: '',
+    notes: '',
     armorTraining: { Light: false, Medium: false, Heavy: false, Shields: false },
     weaponsProficient: '',
     toolsProficient: '',
@@ -439,7 +429,7 @@ export function blankCharacter(): CharacterSheet {
     ],
     spells: [],
     damageCantrips: '',
-    coins: { cp: '', sp: '', ep: '', gp: '', pp: '' },
+    coins: { cp: '', sp: '', gp: '', pp: '' },
     equipment: '',
     magicItemAttunement: '',
   }
