@@ -69,9 +69,13 @@ interface CharacterStore {
   // Armor / proficiencies
   toggleArmorTraining: (t: ArmorType) => void
 
-  // Heroic inspiration + Jack of All Trades
+  // Heroic inspiration + Jack of All Trades + Alert feat
   toggleHeroicInspiration: () => void
   toggleJackOfAllTrades: () => void
+  toggleAlertFeat: () => void
+
+  // Spell prepared/spellbook toggle
+  toggleSpellPrepared: (id: string) => void
 
   // Coins
   setCoin: (k: CoinType, v: string) => void
@@ -219,6 +223,7 @@ export const useCharacter = create<CharacterStore>()(
                 notes: '',
                 description: '',
                 iconDataUrl: '',
+                prepared: true,
               },
             ],
           },
@@ -314,6 +319,24 @@ export const useCharacter = create<CharacterStore>()(
           },
         })),
 
+      toggleAlertFeat: () =>
+        set((state) => ({
+          sheet: {
+            ...state.sheet,
+            alertFeat: !state.sheet.alertFeat,
+          },
+        })),
+
+      toggleSpellPrepared: (id) =>
+        set((state) => ({
+          sheet: {
+            ...state.sheet,
+            spells: state.sheet.spells.map((s) =>
+              s.id === id ? { ...s, prepared: !s.prepared } : s
+            ),
+          },
+        })),
+
       setCoin: (k, v) =>
         set((state) => ({
           sheet: {
@@ -325,7 +348,7 @@ export const useCharacter = create<CharacterStore>()(
       setSavedId: (id) => set({ savedCharId: id }),
     }),
     {
-      name: 'dnd-character-sheet-v7',
+      name: 'dnd-character-sheet-v8',
       partialize: (s) => ({ sheet: s.sheet, savedCharId: s.savedCharId }),
     }
   )

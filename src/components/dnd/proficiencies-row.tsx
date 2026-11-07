@@ -2,11 +2,11 @@
 
 import { useCharacter } from '@/store/character-store'
 import { ARMOR_TYPES, type ArmorType } from '@/lib/dnd'
-import { Star, Sparkles } from 'lucide-react'
+import { Star, Sparkles, Zap } from 'lucide-react'
 
 /**
  * Bottom of page 1: Heroic Inspiration badge + Jack of All Trades toggle +
- * Equipment Training & Proficiencies (armor / weapons / tools).
+ * Alert feat toggle + Equipment Training & Proficiencies (armor / weapons / tools).
  */
 export function ProficienciesRow() {
   const sheet = useCharacter((s) => s.sheet)
@@ -14,11 +14,13 @@ export function ProficienciesRow() {
   const toggleArmorTraining = useCharacter((s) => s.toggleArmorTraining)
   const toggleHeroic = useCharacter((s) => s.toggleHeroicInspiration)
   const toggleJoAT = useCharacter((s) => s.toggleJackOfAllTrades)
+  const toggleAlert = useCharacter((s) => s.toggleAlertFeat)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-2">
-      {/* Left column: Heroic Inspiration shield + JoAT toggle (in separate panels
-          so the shield's pointed-bottom clip-path doesn't clip the JoAT button) */}
+      {/* Left column: Heroic Inspiration shield + JoAT toggle + Alert feat toggle
+          (each in separate panels so the shield's pointed-bottom clip-path
+          doesn't clip the buttons below it) */}
       <div className="flex flex-col gap-2">
         <div className="sheet-shield p-2 flex flex-col items-center justify-start">
           <div className="sheet-label">HEROIC INSPIRATION</div>
@@ -54,6 +56,31 @@ export function ProficienciesRow() {
             <span className="text-[9px] leading-tight text-left">
               Jack of All Trades
               <span className="block font-normal opacity-80">+1 to non-proficient skills</span>
+            </span>
+          </button>
+        </div>
+
+        {/* Alert feat toggle — adds proficiency bonus to initiative */}
+        <div className="sheet-panel p-1.5 flex items-stretch">
+          <button
+            type="button"
+            onClick={toggleAlert}
+            className="w-full flex items-center gap-2 py-1 px-1.5 border text-[10px] font-bold uppercase tracking-wider"
+            style={{
+              borderColor: sheet.alertFeat ? 'var(--blood)' : 'var(--rule-light)',
+              color: sheet.alertFeat ? 'var(--ink)' : 'var(--ink-faint)',
+              backgroundColor: sheet.alertFeat
+                ? 'rgba(212, 69, 63, 0.18)'
+                : 'transparent',
+            }}
+            aria-pressed={sheet.alertFeat}
+            aria-label="Toggle Alert feat (adds proficiency bonus to initiative)"
+            title="Alert feat — adds your proficiency bonus to initiative rolls"
+          >
+            <Zap className="w-4 h-4 flex-shrink-0" />
+            <span className="text-[9px] leading-tight text-left">
+              Alert
+              <span className="block font-normal opacity-80">+ PB to initiative</span>
             </span>
           </button>
         </div>

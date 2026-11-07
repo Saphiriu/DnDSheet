@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Plus, Trash2, ChevronDown, ChevronUp, Sparkles, Flame, Clock, Target, ImagePlus, X } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronUp, Sparkles, Flame, Clock, Target, ImagePlus, X, BookOpen, Check } from 'lucide-react'
 import { useCharacter } from '@/store/character-store'
 
 const LEVELS = ['C', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
+
+type SpellFilter = 'all' | 'prepared' | 'spellbook'
 
 /**
  * Page 2 center column: Cantrips & Prepared Spells.
@@ -13,22 +15,44 @@ const LEVELS = ['C', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
  * shows the spell name, level badge, components (V/S/M), concentration / ritual
  * tags, cast time + range, a short mechanical note, and a fully-editable
  * description (the full spell text). Cards can collapse to save space.
+ *
+ * A filter bar at the top lets you toggle between:
+ *   - All spells (the full spellbook + prepared)
+ *   - Prepared (spells memorized and castable today)
+ *   - Spellbook (spells known but not currently prepared)
+ * Cantrips are always considered "prepared" (they don't use spell slots).
  */
 export function SpellsTable() {
   const sheet = useCharacter((s) => s.sheet)
   const addSpell = useCharacter((s) => s.addSpell)
   const updateSpell = useCharacter((s) => s.updateSpell)
   const removeSpell = useCharacter((s) => s.removeSpell)
+  const toggleSpellPrepared = useCharacter((s) => s.toggleSpellPrepared)
 
-  // Group by level for easier reading
+  const [filter, setFilter] = useState<SpellFilter>('all')
+
+  // Apply the active filter to the spell list.
+  // Cantrips (level 'C') always count as "prepared" — they don't need preparation.
+  const filteredSpells = sheet.spells.filter((s) => {
+    if (filter === 'all') return true
+    const effectivelyPrepared = s.prepared || s.level === 'C'
+    if (filter === 'prepared') return effectivelyPrepared
+    if (filter === 'spellbook') return !effectivelyPrepared
+    return true
+  })
+
+  // Group the filtered spells by level
   const byLevel = LEVELS.map((lvl) => ({
     level: lvl,
-    spells: sheet.spells.filter((s) => s.level === lvl),
+    spells: filteredSpells.filter((s) => s.level === lvl),
   }))
+
+  const preparedCount = sheet.spells.filter((s) => s.prepared || s.level === 'C').length
+  const spellbookOnlyCount = sheet.spells.length - preparedCount
 
   return (
     <div className="sheet-panel p-2 flex flex-col">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
         <div className="sheet-label-lg">CANTRIPS &amp; PREPARED SPELLS</div>
         <button
           type="button"
@@ -40,12 +64,40 @@ export function SpellsTable() {
         </button>
       </div>
 
-      {sheet.spells.length === 0 ? (
+      {/* Filter bar: All / Prepared / Spellbook */}
+      <div className="flex items-center gap-1 mb-3 text-[10px] font-bold uppercase tracking-wider">
+        <FilterPill
+          active={filter === 'all'}
+          onClick={() => setFilter('all')}
+          label="All"
+          count={sheet.spells.length}
+        />
+        <FilterPill
+          active={filter === 'prepared'}
+          onClick={() => setFilter('prepared')}
+          label="Prepared"
+          count={preparedCount}
+          icon={<Check className="w-3 h-3" />}
+          color="var(--gold)"
+        />
+        <FilterPill
+          active={filter === 'spellbook'}
+          onClick={() => setFilter('spellbook')}
+          label="Spellbook"
+          count={spellbookOnlyCount}
+          icon={<BookOpen className="w-3 h-3" />}
+          color="var(--ink-soft)"
+        />
+      </div>
+
+      {filteredSpells.length === 0 ? (
         <div
           className="text-xs italic py-8 text-center"
           style={{ color: 'var(--ink-faint)' }}
         >
-          No spells yet — click &ldquo;Add spell&rdquo; to start your grimoire.
+          {sheet.spells.length === 0
+            ? 'No spells yet — click "Add spell" to start your grimoire.'
+            : `No ${filter === 'prepared' ? 'prepared' : 'spellbook-only'} spells. Switch filter or add a spell.`}
         </div>
       ) : (
         <div className="flex flex-col gap-3 pr-1">
@@ -74,6 +126,7 @@ export function SpellsTable() {
                       spell={s}
                       onChange={(patch) => updateSpell(s.id, patch)}
                       onRemove={() => removeSpell(s.id)}
+                      onTogglePrepared={() => toggleSpellPrepared(s.id)}
                     />
                   ))}
                 </div>
@@ -86,22 +139,65 @@ export function SpellsTable() {
   )
 }
 
+function FilterPill({
+  active,
+  onClick,
+  label,
+  count,
+  icon,
+  color,
+}: {
+  active: boolean
+  onClick: () => void
+  label: string
+  count: number
+  icon?: React.ReactNode
+  color?: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex items-center gap-1 px-2 py-1 border transition-colors"
+      style={{
+        borderColor: active ? (color || 'var(--rule)') : 'var(--rule-light)',
+        color: active ? (color || 'var(--ink)') : 'var(--ink-faint)',
+        backgroundColor: active
+          ? (color === 'var(--gold)' ? 'rgba(212, 169, 73, 0.15)' : 'rgba(184, 163, 120, 0.12)')
+          : 'transparent',
+      }}
+      aria-pressed={active}
+    >
+      {icon}
+      <span>{label}</span>
+      <span className="opacity-60">({count})</span>
+    </button>
+  )
+}
+
 interface SpellCardProps {
   spell: import('@/lib/character-defaults').SpellRowState
   onChange: (patch: Partial<import('@/lib/character-defaults').SpellRowState>) => void
   onRemove: () => void
+  onTogglePrepared: () => void
 }
 
-function SpellCard({ spell, onChange, onRemove }: SpellCardProps) {
+function SpellCard({ spell, onChange, onRemove, onTogglePrepared }: SpellCardProps) {
   const [expanded, setExpanded] = useState(false)
   const s = spell
 
+  // Cantrips are always considered prepared (they don't use spell slots).
+  const effectivelyPrepared = s.prepared || s.level === 'C'
+  // Dim the card slightly when not prepared, to make prepared spells stand out.
+  const cardOpacity = effectivelyPrepared ? 1 : 0.65
+
   return (
     <div
-      className="relative border flex flex-col overflow-hidden"
+      className="relative border flex flex-col overflow-hidden transition-opacity"
       style={{
-        borderColor: 'var(--rule)',
+        borderColor: effectivelyPrepared ? 'var(--rule)' : 'var(--rule-light)',
         backgroundColor: 'var(--parchment)',
+        opacity: cardOpacity,
       }}
     >
       {/* Card header — level badge (or uploaded icon) + name + tags + remove */}
@@ -265,17 +361,35 @@ function SpellCard({ spell, onChange, onRemove }: SpellCardProps) {
         />
       )}
 
-      {/* Footer — toggleable flags row */}
+      {/* Footer — toggleable flags row.
+          4 columns: Prepared (new) | Concentration | Ritual | Level.
+          Cantrips always show Prepared as locked-on (they don't use slots). */}
       <div
-        className="grid grid-cols-3 border-t"
+        className="grid grid-cols-4 border-t"
         style={{ borderColor: 'var(--rule)' }}
       >
         <FooterToggle
-          label="Concentration"
+          label="Prepared"
+          active={effectivelyPrepared}
+          onToggle={onTogglePrepared}
+          color="var(--gold)"
+          icon={<Check className="w-3 h-3" />}
+          disabled={s.level === 'C'}
+          title={
+            s.level === 'C'
+              ? 'Cantrips are always prepared (they do not use spell slots)'
+              : effectivelyPrepared
+                ? 'Prepared — can cast today using a spell slot'
+                : 'In spellbook — known but not prepared today. Click to prepare.'
+          }
+        />
+        <FooterToggle
+          label="Concent."
           active={s.concentration}
           onToggle={() => onChange({ concentration: !s.concentration })}
           color="var(--blood)"
           icon={<Flame className="w-3 h-3" />}
+          borderLeft
         />
         <FooterToggle
           label="Ritual"
@@ -559,6 +673,8 @@ function FooterToggle({
   color,
   icon,
   borderLeft = false,
+  disabled = false,
+  title,
 }: {
   label: string
   active: boolean
@@ -566,18 +682,23 @@ function FooterToggle({
   color: string
   icon: React.ReactNode
   borderLeft?: boolean
+  disabled?: boolean
+  title?: string
 }) {
   return (
     <button
       type="button"
-      onClick={onToggle}
-      className={`flex items-center justify-center gap-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors hover:bg-rule/10 ${borderLeft ? 'border-l' : ''}`}
+      onClick={disabled ? undefined : onToggle}
+      disabled={disabled}
+      className={`flex items-center justify-center gap-1 py-1.5 text-[9px] font-bold uppercase tracking-wider transition-colors ${disabled ? 'cursor-not-allowed' : 'hover:bg-rule/10'} ${borderLeft ? 'border-l' : ''}`}
       style={{
         borderColor: 'var(--rule)',
         color: active ? color : 'var(--ink-faint)',
+        opacity: disabled ? 0.7 : 1,
       }}
       aria-pressed={active}
       aria-label={`Toggle ${label}`}
+      title={title}
     >
       {icon}
       <span>{label}</span>

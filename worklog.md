@@ -392,3 +392,63 @@ Stage Summary:
 - Hover over the badge to reveal a small red × button in the top-right corner — click it to clear the icon and restore the text badge.
 - Icons persist across page reloads (localStorage) AND through Save → Load cycles (SQLite via the API).
 - Image size is capped at 128×128 (auto-resized via canvas), keeping each icon's payload small (~300 bytes for a 32×32 icon, ~5–10 KB for a full 128×128 PNG) so multiple icons won't bloat the localStorage or DB.
+
+---
+Task ID: 9
+Agent: main
+Task: Add Alert feat toggle (+PB to initiative), verify spell save DC formula, add prepared/spellbook toggle.
+
+Work Log:
+- Verified the spell save DC formula in `src/lib/dnd.ts` is already correct: `spellSaveDC = 8 + profBonus + spellcastingMod`. For the Bard example (PB +2, CHA 18 → +4): `8 + 2 + 4 = 14` ✓.
+- Added `alertFeat: boolean` field to the `CharacterSheet` interface in `src/lib/character-defaults.ts`. Defaulted to `false` in both `defaultCharacter()` and `blankCharacter()`.
+- Updated `StatsBar` in `src/components/dnd/stats-bar.tsx` so Initiative is now computed as `dexMod + (sheet.alertFeat ? prof : 0)`. When Alert is off, Initiative = DEX mod (unchanged). When Alert is on, Initiative = DEX mod + PB. The tooltip on the INITIATIVE cell explains the breakdown (e.g. "DEX mod +0 + Alert feat PB +2 = +2").
+- Added a new `toggleAlertFeat` action to the Zustand store in `src/store/character-store.ts`.
+- Added an Alert feat toggle button in `src/components/dnd/proficiencies-row.tsx` — sits below the Jack of All Trades toggle, in its own `sheet-panel` (so it's never clipped by the Heroic Inspiration shield). Uses the `Zap` lucide icon. Active state: blood-red border + subtle red tint background. Label shows "Alert" + "+ PB to initiative".
+- Added `prepared: boolean` field to `SpellRowState` in `src/lib/character-defaults.ts`. Defaulted to `true` for all 8 example spells (so they show under "Prepared" by default). Added `prepared: true` to the store's `addSpell` template (new spells start prepared).
+- Added `toggleSpellPrepared(id)` action to the Zustand store.
+- Updated `SpellsTable` in `src/components/dnd/spells-table.tsx`:
+  - Added a filter bar with 3 pills at the top: **All** (count) | **Prepared** (count, with Check icon, gold accent) | **Spellbook** (count, with BookOpen icon, soft accent).
+  - Cantrips (level 'C') always count as "prepared" since they don't use spell slots — they appear in the Prepared filter and their prepared toggle is disabled.
+  - "Spellbook" filter shows only spells that are NOT prepared (spells known but not currently memorized).
+  - When the active filter has no matching spells, shows a helpful empty-state message like "No spellbook-only spells. Switch filter or add a spell."
+- Updated each `SpellCard`:
+  - Added a 4th footer toggle button: **Prepared** (with Check icon, gold accent). Sits in a 4-column footer grid: Prepared | Concent. | Ritual | Level.
+  - The Prepared toggle is disabled for cantrips (`disabled={s.level === 'C'}`) with a tooltip explaining "Cantrips are always prepared (they do not use spell slots)".
+  - The card's opacity is reduced to 0.65 when the spell is not prepared — making prepared spells visually pop.
+  - Border color is also softened (`--rule-light` instead of `--rule`) for non-prepared spells.
+- Updated `FooterToggle` to accept `disabled` and `title` props so the Prepared toggle for cantrips can be locked.
+- Bumped localStorage version to `v8`.
+
+Verification (Agent Browser):
+- Page loads with HTTP 200, no console errors, no runtime errors.
+- Verified Alert feat toggle works:
+  - Before toggle: Initiative = +0 (DEX 10 → +0), tooltip "Auto-derived from DEX modifier (toggle Alert feat to add PB)"
+  - Clicked Alert toggle → `aria-pressed: true`, button gets blood-red border + tinted background
+  - After toggle: Initiative = **+2** (DEX +0 + Alert PB +2 = +2), tooltip "DEX mod +0 + Alert feat PB +2 = +2" ✓
+- Verified spell save DC formula:
+  - Spellcasting Modifier: +4 (CHA 18 → +4) ✓
+  - **Spell Save DC: 14** = 8 + PB(2) + Spellcasting Mod(4) = 14 ✓
+  - Spell Attack Bonus: +6 = PB(2) + Spellcasting Mod(4) ✓
+- Verified prepared/spellbook filter:
+  - Default state: All (8), Prepared (8), Spellbook (0)
+  - All 8 example spells start as prepared=true
+  - 3 cantrip "Toggle Prepared" buttons are disabled (cantrips always prepared)
+  - 5 L1 spell "Toggle Prepared" buttons are enabled
+  - Clicked Charm Person's Prepared toggle → counts became All (8), Prepared (7), Spellbook (1)
+  - Clicked "Spellbook" filter → only Charm Person showed (the one unprepared spell) ✓
+  - Clicked "Prepared" filter → 7 spells showed (3 cantrips + 4 L1, missing Charm Person) ✓
+  - Clicked "All" filter → all 8 spells showed
+- Verified card dimming:
+  - Charm Person (unprepared): opacity 0.65, Toggle Prepared button enabled ✓
+  - Vicious Mockery (cantrip): opacity 1, Toggle Prepared button disabled ✓
+- `bun run lint` passes with 0 errors and 0 warnings.
+- Dev server log: HTTP 200 responses only, no runtime errors.
+
+Stage Summary:
+- Alert feat toggle added (under Heroic Inspiration shield, below Jack of All Trades). Adds PB to Initiative when active. Tooltip shows the breakdown calculation.
+- Spell save DC formula confirmed correct: 8 + PB + spellcasting modifier.
+- Prepared/spellbook system added:
+  - Each spell card has a "Prepared" toggle in its footer (disabled for cantrips).
+  - A filter bar at the top of the spells panel lets you switch between All / Prepared / Spellbook views with live counts.
+  - Non-prepared spells are visually dimmed (opacity 0.65) and have a softer border so prepared spells stand out.
+  - Cantrips are always treated as prepared (they don't use spell slots).

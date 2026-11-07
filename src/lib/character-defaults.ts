@@ -45,6 +45,7 @@ export interface SpellRowState {
   notes: string // short mechanical summary (e.g. "1d6 Psychic DisSa")
   description: string // full spell description (free-form text)
   iconDataUrl: string // optional uploaded icon image (base64 data URL); replaces the level badge
+  prepared: boolean // true = prepared (memorized and castable today), false = in spellbook only
 }
 
 export interface CharacterSheet {
@@ -97,6 +98,7 @@ export interface CharacterSheet {
   languages: string
   heroicInsppiration: boolean
   jackOfAllTrades: boolean // Bard level-2 feature: adds flat +1 to non-proficient ability checks
+  alertFeat: boolean // Alert feat: adds PB to initiative
 
   // Spellcasting — spellcasting ability is chosen; modifier / save DC / attack
   // bonus are all auto-derived at render time.
@@ -228,6 +230,7 @@ export function defaultCharacter(): CharacterSheet {
     languages: 'Common, Elvish, Celestial, Druid',
     heroicInsppiration: true,
     jackOfAllTrades: true, // Bard level-2 class feature
+    alertFeat: false, // Alert feat adds PB to initiative
 
     spellcastingAbility: 'Charisma',
     spellSlots: [
@@ -253,6 +256,7 @@ export function defaultCharacter(): CharacterSheet {
           'or take 1d6 psychic damage and have disadvantage on the next attack roll it makes before the end of its next turn.\n\n' +
           'At Higher Levels. The damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).',
         iconDataUrl: '',
+        prepared: true,
       },
       {
         id: id(), level: 'C', name: 'Prestidigitation', castingTime: '1A', range: '10 ft',
@@ -268,6 +272,7 @@ export function defaultCharacter(): CharacterSheet {
           '• You create a small, useless trinket that lasts until the end of your next turn.\n\n' +
           'If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active at a time.',
         iconDataUrl: '',
+        prepared: true,
       },
       {
         id: id(), level: 'C', name: 'Mind Sliver', castingTime: '1A', range: '60 ft',
@@ -279,6 +284,7 @@ export function defaultCharacter(): CharacterSheet {
           'subtracts 1d4 from the next saving throw it makes before the end of your next turn.\n\n' +
           'At Higher Levels. The damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6).',
         iconDataUrl: '',
+        prepared: true,
       },
       // L1
       {
@@ -292,6 +298,7 @@ export function defaultCharacter(): CharacterSheet {
           'When the spell ends, the creature knows it was charmed by you.\n\n' +
           'At Higher Levels. You can target one additional creature for each slot level above 1st.',
         iconDataUrl: '',
+        prepared: true,
       },
       {
         id: id(), level: '1', name: 'Color Spray', castingTime: '1A', range: '15 ft cone',
@@ -304,6 +311,7 @@ export function defaultCharacter(): CharacterSheet {
           'hit points, starting with the lowest. Subtract each creature\'s hit points from the total before moving to the next.\n\n' +
           'At Higher Levels. Roll 2d10 more for each slot level above 1st.',
         iconDataUrl: '',
+        prepared: true,
       },
       {
         id: id(), level: '1', name: 'Bane', castingTime: '1A', range: '30 ft (3 targets)',
@@ -315,6 +323,7 @@ export function defaultCharacter(): CharacterSheet {
           'A creature can be affected by only one Bane at a time.\n\n' +
           'At Higher Levels. You can target one additional creature for each slot level above 1st.',
         iconDataUrl: '',
+        prepared: true,
       },
       {
         id: id(), level: '1', name: 'Cure Wounds', castingTime: '1A', range: 'Touch',
@@ -325,6 +334,7 @@ export function defaultCharacter(): CharacterSheet {
           'This spell has no effect on undead or constructs.\n\n' +
           'At Higher Levels. The healing increases by 1d8 for each slot level above 1st.',
         iconDataUrl: '',
+        prepared: true,
       },
       {
         id: id(), level: '1', name: 'Sleep', castingTime: '1A', range: '90 ft',
@@ -337,6 +347,7 @@ export function defaultCharacter(): CharacterSheet {
           'creature\'s hit points from the total before moving to the next. Undead and creatures immune to being charmed aren\'t affected.\n\n' +
           'At Higher Levels. Roll 2d8 more for each slot level above 1st.',
         iconDataUrl: '',
+        prepared: true,
       },
     ],
     damageCantrips: '',
@@ -410,6 +421,7 @@ export function blankCharacter(): CharacterSheet {
     languages: '',
     heroicInspiration: false,
     jackOfAllTrades: false,
+    alertFeat: false,
     spellcastingAbility: '',
     spellSlots: [
       { total: 2, expended: 0 }, { total: 0, expended: 0 }, { total: 0, expended: 0 },

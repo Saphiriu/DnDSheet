@@ -34,11 +34,20 @@ export function StatsBar() {
   const perceptionProficient = sheet.skills.perception.proficient
   const pp = passivePerception(wisMod, prof, perceptionProficient)
 
+  // Initiative = DEX modifier + (proficiency bonus if Alert feat is active).
+  const initiative = dexMod + (sheet.alertFeat ? prof : 0)
+
   // Read-only derived cells
-  const derivedCells: { label: string; value: string }[] = [
-    { label: 'PROFICIENCY BONUS', value: signed(prof) },
-    { label: 'INITIATIVE', value: signed(dexMod) },
-    { label: 'PASSIVE PERCEPTION', value: String(pp) },
+  const derivedCells: { label: string; value: string; title: string }[] = [
+    { label: 'PROFICIENCY BONUS', value: signed(prof), title: 'Auto-derived from level' },
+    {
+      label: 'INITIATIVE',
+      value: signed(initiative),
+      title: sheet.alertFeat
+        ? `DEX mod ${signed(dexMod)} + Alert feat PB ${signed(prof)} = ${signed(initiative)}`
+        : 'Auto-derived from DEX modifier (toggle Alert feat to add PB)',
+    },
+    { label: 'PASSIVE PERCEPTION', value: String(pp), title: '10 + WIS mod + (PB if Perception proficient)' },
   ]
 
   // Editable cells
@@ -59,7 +68,7 @@ export function StatsBar() {
             className="text-base font-extrabold mt-0.5"
             style={{ color: 'var(--ink)' }}
             aria-label={c.label}
-            title={`${c.label} — auto-derived`}
+            title={c.title}
           >
             {c.value}
           </div>
