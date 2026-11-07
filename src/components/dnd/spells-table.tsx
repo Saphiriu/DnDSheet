@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Plus, Trash2, ChevronDown, ChevronUp, Sparkles, Flame, Clock, Target, ImagePlus, X, BookOpen, Check } from 'lucide-react'
+import { Plus, Trash2, ChevronDown, ChevronUp, Sparkles, Flame, Clock, Target, ImagePlus, X, BookOpen, Check, Hourglass } from 'lucide-react'
 import { useCharacter } from '@/store/character-store'
 
 const LEVELS = ['C', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
@@ -307,9 +307,9 @@ function SpellCard({ spell, onChange, onRemove, onTogglePrepared }: SpellCardPro
         </div>
       </div>
 
-      {/* Metadata row: cast time | range */}
+      {/* Metadata row: cast time | range | duration */}
       <div
-        className="grid grid-cols-2 border-b"
+        className="grid grid-cols-3 border-b"
         style={{ borderColor: 'var(--rule)' }}
       >
         <MetaField
@@ -325,6 +325,14 @@ function SpellCard({ spell, onChange, onRemove, onTogglePrepared }: SpellCardPro
           value={s.range}
           onChange={(v) => onChange({ range: v })}
           placeholder="60 ft"
+          borderLeft
+        />
+        <MetaField
+          icon={<Hourglass className="w-3.5 h-3.5" />}
+          label="Duration"
+          value={s.duration}
+          onChange={(v) => onChange({ duration: v })}
+          placeholder="Instant."
           borderLeft
         />
       </div>

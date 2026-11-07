@@ -39,6 +39,7 @@ export interface SpellRowState {
   name: string
   castingTime: string
   range: string
+  duration: string // how long the spell's effect lasts (e.g. "Instantaneous", "1 minute", "Up to 1 hour")
   components: { c: boolean; r: boolean; m: boolean }
   concentration: boolean
   ritual: boolean
@@ -248,6 +249,7 @@ export function defaultCharacter(): CharacterSheet {
       // cantrips
       {
         id: id(), level: 'C', name: 'Vicious Mockery', castingTime: '1A', range: '60 ft',
+        duration: 'Instantaneous',
         components: { c: true, r: false, m: false }, concentration: false, ritual: false,
         notes: '1d6 Psychic · Wis save · disadv next attack',
         description:
@@ -260,6 +262,7 @@ export function defaultCharacter(): CharacterSheet {
       },
       {
         id: id(), level: 'C', name: 'Prestidigitation', castingTime: '1A', range: '10 ft',
+        duration: 'Up to 1 hour',
         components: { c: true, r: false, m: false }, concentration: false, ritual: false,
         notes: 'Minor magical effect (up to 3 active)',
         description:
@@ -276,6 +279,7 @@ export function defaultCharacter(): CharacterSheet {
       },
       {
         id: id(), level: 'C', name: 'Mind Sliver', castingTime: '1A', range: '60 ft',
+        duration: 'Instantaneous',
         components: { c: true, r: false, m: false }, concentration: false, ritual: false,
         notes: '1d6 Psychic · Int save · -1d4 next save',
         description:
@@ -289,6 +293,7 @@ export function defaultCharacter(): CharacterSheet {
       // L1
       {
         id: id(), level: '1', name: 'Charm Person', castingTime: '1A', range: '30 ft',
+        duration: '1 hour',
         components: { c: true, r: false, m: false }, concentration: true, ritual: false,
         notes: 'Charm 1h · Wis save',
         description:
@@ -302,6 +307,7 @@ export function defaultCharacter(): CharacterSheet {
       },
       {
         id: id(), level: '1', name: 'Color Spray', castingTime: '1A', range: '15 ft cone',
+        duration: '1 round',
         components: { c: true, r: false, m: true }, concentration: false, ritual: false,
         notes: 'Blind · Con save · 6d10 HP cap',
         description:
@@ -315,6 +321,7 @@ export function defaultCharacter(): CharacterSheet {
       },
       {
         id: id(), level: '1', name: 'Bane', castingTime: '1A', range: '30 ft (3 targets)',
+        duration: 'Up to 1 minute',
         components: { c: true, r: false, m: true }, concentration: true, ritual: false,
         notes: '-1d4 to attacks & saves · Cha save',
         description:
@@ -327,6 +334,7 @@ export function defaultCharacter(): CharacterSheet {
       },
       {
         id: id(), level: '1', name: 'Cure Wounds', castingTime: '1A', range: 'Touch',
+        duration: 'Instantaneous',
         components: { c: true, r: false, m: true }, concentration: false, ritual: false,
         notes: '1d8 + CHA healing',
         description:
@@ -338,6 +346,7 @@ export function defaultCharacter(): CharacterSheet {
       },
       {
         id: id(), level: '1', name: 'Sleep', castingTime: '1A', range: '90 ft',
+        duration: '1 minute',
         components: { c: true, r: false, m: true }, concentration: false, ritual: false,
         notes: '5d8 HP slumber · no save',
         description:
